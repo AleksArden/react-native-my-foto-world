@@ -1,1 +1,1 @@
-# react-native-my-foto-world
+# react-native-my-photo-world
