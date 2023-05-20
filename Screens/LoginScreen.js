@@ -11,13 +11,13 @@ import {
 
 import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
+import ButtonShowHide from '../Components/ButtonShowHide';
 import {
   btnShowHideReducer,
   formReducer,
   initStateBtnShowHide,
   initStateSignIn,
 } from '../Servises/reducer';
-import ButtonShowHide from '../Components/ButtonShowHide';
 
 const LoginScreen = () => {
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateSignIn);
@@ -28,7 +28,7 @@ const LoginScreen = () => {
   );
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [onFocus, setOnFocus] = useState({ focusedInput: '' });
+  const [inputName, setInputName] = useState('');
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -61,9 +61,7 @@ const LoginScreen = () => {
               <Text style={styles.title}>Sign in</Text>
 
               <TextInput
-                style={
-                  onFocus.focusedInput === 'email' ? inputOnFocus : styles.input
-                }
+                style={inputName === 'email' ? inputOnFocus : styles.input}
                 autoComplete="off"
                 onChangeText={(value) =>
                   dispatchForm({ type: 'email', payload: value })
@@ -72,8 +70,8 @@ const LoginScreen = () => {
                 placeholderTextColor="#BDBDBD"
                 cursorColor="#212121"
                 value={stateForm.email}
-                onFocus={() => setOnFocus({ focusedInput: 'email' })}
-                onBlur={() => setOnFocus({ focusedInput: '' })}
+                onFocus={() => setInputName('email')}
+                onBlur={() => setInputName('')}
               />
               <View
                 style={[
@@ -82,11 +80,7 @@ const LoginScreen = () => {
                 ]}
               >
                 <TextInput
-                  style={
-                    onFocus.focusedInput === 'password'
-                      ? inputOnFocus
-                      : styles.input
-                  }
+                  style={inputName === 'password' ? inputOnFocus : styles.input}
                   autoComplete="off"
                   onChangeText={(value) =>
                     dispatchForm({ type: 'password', payload: value })
@@ -96,8 +90,8 @@ const LoginScreen = () => {
                   cursorColor="#212121"
                   value={stateForm.password}
                   secureTextEntry={stateShowHide.passwordVisibility}
-                  onFocus={() => setOnFocus({ focusedInput: 'password' })}
-                  onBlur={() => setOnFocus({ focusedInput: '' })}
+                  onFocus={() => setInputName('password')}
+                  onBlur={() => setInputName('')}
                 />
                 <ButtonShowHide
                   onPress={() =>

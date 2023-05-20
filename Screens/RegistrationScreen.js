@@ -13,6 +13,7 @@ import Icon from '../assets/icons/icon-add.svg';
 import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
 import ButtonShowHide from '../Components/ButtonShowHide';
+
 import {
   btnShowHideReducer,
   formReducer,
@@ -29,7 +30,7 @@ const RegistrationScreen = () => {
   );
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [onFocus, setOnFocus] = useState({ focusedInput: '' });
+  const [inputName, setInputName] = useState('');
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -71,35 +72,33 @@ const RegistrationScreen = () => {
               <Text style={styles.title}>Registration</Text>
 
               <TextInput
-                style={
-                  onFocus.focusedInput === 'login' ? inputOnFocus : styles.input
-                }
-                autoComplete="off"
+                style={inputName === 'login' ? inputOnFocus : styles.input}
                 onChangeText={(value) =>
                   dispatchForm({ type: 'login', payload: value })
                 }
+                autoComplete="off"
                 placeholder="Login"
                 placeholderTextColor="#BDBDBD"
                 cursorColor="#212121"
                 value={stateForm.login}
-                onFocus={() => setOnFocus({ focusedInput: 'login' })}
-                onBlur={() => setOnFocus({ focusedInput: '' })}
+                onFocus={() => setInputName('login')}
+                onBlur={() => setInputName('')}
               />
+
               <TextInput
-                style={
-                  onFocus.focusedInput === 'email' ? inputOnFocus : styles.input
-                }
-                autoComplete="off"
+                style={inputName === 'email' ? inputOnFocus : styles.input}
                 onChangeText={(value) =>
                   dispatchForm({ type: 'email', payload: value })
                 }
+                autoComplete="off"
                 placeholder="Email Address"
                 placeholderTextColor="#BDBDBD"
                 cursorColor="#212121"
                 value={stateForm.email}
-                onFocus={() => setOnFocus({ focusedInput: 'email' })}
-                onBlur={() => setOnFocus({ focusedInput: '' })}
+                onFocus={() => setInputName('email')}
+                onBlur={() => setInputName('')}
               />
+
               <View
                 style={[
                   { marginBottom: !isShowKeyboard ? 43 : 32 },
@@ -107,22 +106,18 @@ const RegistrationScreen = () => {
                 ]}
               >
                 <TextInput
-                  style={
-                    onFocus.focusedInput === 'password'
-                      ? inputOnFocus
-                      : styles.input
-                  }
-                  autoComplete="off"
+                  style={inputName === 'password' ? inputOnFocus : styles.input}
                   onChangeText={(value) =>
                     dispatchForm({ type: 'password', payload: value })
                   }
-                  placeholder="Password"
+                  autoComplete="off"
+                  placeholder="Email"
                   placeholderTextColor="#BDBDBD"
                   cursorColor="#212121"
                   value={stateForm.password}
                   secureTextEntry={stateShowHide.passwordVisibility}
-                  onFocus={() => setOnFocus({ focusedInput: 'password' })}
-                  onBlur={() => setOnFocus({ focusedInput: '' })}
+                  onFocus={() => setInputName('password')}
+                  onBlur={() => setInputName('')}
                 />
                 <ButtonShowHide
                   onPress={() =>
@@ -134,6 +129,7 @@ const RegistrationScreen = () => {
                   name={stateShowHide.btnShowHide}
                 />
               </View>
+
               {!isShowKeyboard && (
                 <>
                   <Button onPress={formSubmit} name="Register" />
@@ -219,7 +215,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderColor: '#FF6C00',
   },
-
   text: {
     marginBottom: 78,
 
