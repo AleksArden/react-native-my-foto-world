@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
@@ -12,15 +11,24 @@ import {
 
 import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
+import {
+  btnShowHideReducer,
+  formReducer,
+  initStateBtnShowHide,
+  initStateSignIn,
+} from '../Servises/reducer';
+import ButtonShowHide from '../Components/ButtonShowHide';
 
 const LoginScreen = () => {
-  const [email, onChangeEmail] = useState();
-  const [password, onChangePassword] = useState();
+  const [stateForm, dispatchForm] = useReducer(formReducer, initStateSignIn);
+
+  const [stateShowHide, dispatchShowHide] = useReducer(
+    btnShowHideReducer,
+    initStateBtnShowHide
+  );
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [onFocus, setOnFocus] = useState({ focusedInput: '' });
-  const [passwordVisibility, setPasswordVisibility] = useState(true);
-  const [showHide, setShowHide] = useState('Show');
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -36,19 +44,12 @@ const LoginScreen = () => {
   }, []);
 
   const formSubmit = () => {
-    console.log({ email, password });
-    onChangeEmail('');
-    onChangePassword('');
-  };
-
-  const handlePasswordVisibility = () => {
-    if (passwordVisibility === true) {
-      setPasswordVisibility(!passwordVisibility);
-      setShowHide('Hide');
-    } else {
-      setPasswordVisibility(!passwordVisibility);
-      setShowHide('Show');
-    }
+    console.log({
+      email: stateForm.email,
+      password: stateForm.password,
+    });
+    dispatchForm({ type: 'email', payload: '' });
+    dispatchForm({ type: 'password', payload: '' });
   };
 
   return (
@@ -64,11 +65,13 @@ const LoginScreen = () => {
                   onFocus.focusedInput === 'email' ? inputOnFocus : styles.input
                 }
                 autoComplete="off"
-                onChangeText={onChangeEmail}
+                onChangeText={(value) =>
+                  dispatchForm({ type: 'email', payload: value })
+                }
                 placeholder="Email Address"
                 placeholderTextColor="#BDBDBD"
                 cursorColor="#212121"
-                value={email}
+                value={stateForm.email}
                 onFocus={() => setOnFocus({ focusedInput: 'email' })}
                 onBlur={() => setOnFocus({ focusedInput: '' })}
               />
@@ -85,22 +88,26 @@ const LoginScreen = () => {
                       : styles.input
                   }
                   autoComplete="off"
-                  onChangeText={onChangePassword}
+                  onChangeText={(value) =>
+                    dispatchForm({ type: 'password', payload: value })
+                  }
                   placeholder="Password"
                   placeholderTextColor="#BDBDBD"
                   cursorColor="#212121"
-                  value={password}
-                  secureTextEntry={passwordVisibility}
+                  value={stateForm.password}
+                  secureTextEntry={stateShowHide.passwordVisibility}
                   onFocus={() => setOnFocus({ focusedInput: 'password' })}
                   onBlur={() => setOnFocus({ focusedInput: '' })}
                 />
-                <TouchableOpacity
-                  style={styles.btnShowHide}
-                  activeOpacity={1}
-                  onPress={handlePasswordVisibility}
-                >
-                  <Text style={styles.textShowHide}>{showHide}</Text>
-                </TouchableOpacity>
+                <ButtonShowHide
+                  onPress={() =>
+                    dispatchShowHide({
+                      type: 'passwordVisibility',
+                      payload: !stateShowHide.passwordVisibility,
+                    })
+                  }
+                  name={stateShowHide.btnShowHide}
+                />
               </View>
               {!isShowKeyboard && (
                 <>
@@ -169,19 +176,6 @@ const styles = StyleSheet.create({
   inputOnFocus: {
     backgroundColor: '#FFFFFF',
     borderColor: '#FF6C00',
-  },
-  btnShowHide: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-  },
-  textShowHide: {
-    color: '#1B4371',
-
-    fontFamily: 'Roboto-regular',
-    fontStyle: 'normal',
-    fontSize: 16,
-    lineHeight: 19,
   },
   text: {
     marginBottom: 144,
