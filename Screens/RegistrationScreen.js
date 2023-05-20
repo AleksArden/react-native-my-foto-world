@@ -7,15 +7,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Dimensions,
-  ImageBackground,
   KeyboardAvoidingView,
 } from 'react-native';
 import Icon from '../assets/icons/icon-add.svg';
-import Image from '../assets/images/Photo-BG.jpg';
-
-const screenHeight = Dimensions.get('window').height;
-const screenWidth = Dimensions.get('window').width;
+import ImageBackgroundComponent from '../Components/ImageBackground';
+import Button from '../Components/Button';
 
 const RegistrationScreen = () => {
   const [login, onChangeLogin] = useState();
@@ -60,7 +56,7 @@ const RegistrationScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-        <ImageBackground source={Image} resizeMode="cover" style={styles.image}>
+        <ImageBackgroundComponent>
           <KeyboardAvoidingView style={styles.wrapper} behavior="height">
             <View style={styles.form}>
               <View style={styles.imageContainer}>
@@ -130,13 +126,7 @@ const RegistrationScreen = () => {
               </View>
               {!isShowKeyboard && (
                 <>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={formSubmit}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.textBtn}>Register</Text>
-                  </TouchableOpacity>
+                  <Button onPress={formSubmit} name="Register" />
                   <Text style={styles.text}>
                     Already have an account? Sign in
                   </Text>
@@ -144,7 +134,7 @@ const RegistrationScreen = () => {
               )}
             </View>
           </KeyboardAvoidingView>
-        </ImageBackground>
+        </ImageBackgroundComponent>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -155,10 +145,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
-    width: screenWidth,
-    height: screenHeight,
-  },
+
   wrapper: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -235,24 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
   },
-  btn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 51,
-    marginBottom: 16,
 
-    backgroundColor: '#FF6C00',
-    borderRadius: 100,
-  },
-  textBtn: {
-    color: '#ffffff',
-
-    fontFamily: 'Roboto-regular',
-    fontStyle: 'normal',
-    fontSize: 16,
-    lineHeight: 19,
-    letterSpacing: 1.5,
-  },
   text: {
     marginBottom: 78,
 

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "react-native-project1",
-    "slug": "react-native-project1",
+    "name": "react-native-my-photo-world",
+    "slug": "react-native-my-photo-world",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,6 +19,7 @@
     },
     "android": {
       "jsEngine": "jsc",
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
