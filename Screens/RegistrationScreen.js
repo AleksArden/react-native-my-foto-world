@@ -9,6 +9,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from '../assets/icons/icon-add.svg';
 import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
@@ -22,6 +23,7 @@ import {
 } from '../Servises/reducer';
 
 const RegistrationScreen = () => {
+  const navigation = useNavigation();
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateRegister);
 
   const [stateShowHide, dispatchShowHide] = useReducer(
@@ -51,6 +53,7 @@ const RegistrationScreen = () => {
       email: stateForm.email,
       password: stateForm.password,
     });
+    navigation.navigate('Home');
     dispatchForm({ type: 'login', payload: '' });
     dispatchForm({ type: 'email', payload: '' });
     dispatchForm({ type: 'password', payload: '' });
@@ -91,7 +94,7 @@ const RegistrationScreen = () => {
                   dispatchForm({ type: 'email', payload: value })
                 }
                 autoComplete="off"
-                placeholder="Email Address"
+                placeholder="Email Address "
                 placeholderTextColor="#BDBDBD"
                 cursorColor="#212121"
                 value={stateForm.email}
@@ -133,9 +136,15 @@ const RegistrationScreen = () => {
               {!isShowKeyboard && (
                 <>
                   <Button onPress={formSubmit} name="Register" />
-                  <Text style={styles.text}>
-                    Already have an account? Sign in
-                  </Text>
+
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => navigation.navigate('Login')}
+                  >
+                    <Text style={styles.text}>
+                      Already have an account? Sign in
+                    </Text>
+                  </TouchableOpacity>
                 </>
               )}
             </View>
@@ -215,6 +224,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderColor: '#FF6C00',
   },
+
   text: {
     marginBottom: 78,
 

@@ -7,7 +7,9 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
@@ -20,6 +22,7 @@ import {
 } from '../Servises/reducer';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateSignIn);
 
   const [stateShowHide, dispatchShowHide] = useReducer(
@@ -48,6 +51,7 @@ const LoginScreen = () => {
       email: stateForm.email,
       password: stateForm.password,
     });
+    navigation.navigate('Home');
     dispatchForm({ type: 'email', payload: '' });
     dispatchForm({ type: 'password', payload: '' });
   };
@@ -106,9 +110,14 @@ const LoginScreen = () => {
               {!isShowKeyboard && (
                 <>
                   <Button onPress={formSubmit} name="Sign In" />
-                  <Text style={styles.text}>
-                    Don't have an account? Register
-                  </Text>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => navigation.navigate('Registration')}
+                  >
+                    <Text style={styles.text}>
+                      Don't have an account? Register
+                    </Text>
+                  </TouchableOpacity>
                 </>
               )}
             </View>
