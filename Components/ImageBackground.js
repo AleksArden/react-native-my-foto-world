@@ -1,4 +1,5 @@
 import { React } from 'react';
+
 import { ImageBackground, StyleSheet, Dimensions } from 'react-native';
 
 import Image from '../assets/images/Photo-BG.jpg';

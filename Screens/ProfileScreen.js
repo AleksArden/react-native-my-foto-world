@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+
+import ImageBackgroundComponent from '../Components/ImageBackground';
 
 const ProfileScreen = () => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>ProfileScreen</Text>
+      <ImageBackgroundComponent />
     </View>
   );
 };
