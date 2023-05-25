@@ -7,8 +7,8 @@ import CreatePostsScreen from './CreatePostsScreen';
 import ProfileScreen from './ProfileScreen';
 
 import { Feather } from '@expo/vector-icons';
-
-import ButtonCreatePosts from '../Components/ButtonCreatePosts';
+import { AntDesign } from '@expo/vector-icons';
+import ButtonOrangeOval from '../Components/ButtonOrangeOval';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,7 +16,7 @@ const Home = () => {
   const navigation = useNavigation();
   return (
     <Tab.Navigator
-      initialRouteName="PostsScreen"
+      initialRouteName="HomePosts"
       backBehavior="history"
       screenOptions={{
         tabBarShowLabel: false,
@@ -60,7 +60,7 @@ const Home = () => {
           tabBarIcon: () => <Feather name="grid" size={24} color="#212121CC" />,
           tabBarIconStyle: { marginLeft: 81 },
         }}
-        name="PostsScreen"
+        name="HomePosts"
         component={PostsScreen}
       />
       <Tab.Screen
@@ -74,20 +74,23 @@ const Home = () => {
             fontSize: 17,
             lineHeight: 22,
           },
+          unmountOnBlur: true,
           headerStyle: {
             height: 88,
             borderBottomColor: '#BDBDBD',
             borderBottomWidth: 1,
           },
           tabBarButton: () => (
-            <ButtonCreatePosts
+            <ButtonOrangeOval
               onPress={() => navigation.navigate('CreatePostsScreen')}
-            />
+            >
+              <AntDesign name="plus" size={18} color="#fff" />
+            </ButtonOrangeOval>
           ),
           tabBarStyle: { display: 'none' },
           headerLeft: () => (
             <HeaderBackButton
-              onPress={() => navigation.navigate('PostsScreen')}
+              onPress={() => navigation.navigate('HomePosts')}
               backImage={() => (
                 <Feather name="arrow-left" size={24} color="#212121CC" />
               )}

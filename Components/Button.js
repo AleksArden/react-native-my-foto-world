@@ -1,10 +1,15 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const Button = ({ onPress, name }) => {
+const Button = ({ onPress, name, image }) => {
   return (
-    <TouchableOpacity style={styles.btn} onPress={onPress} activeOpacity={0.8}>
-      <Text style={styles.textBtn}>{name}</Text>
+    <TouchableOpacity
+      disabled={image === null ? true : false}
+      style={image === null ? btnDisabled : styles.btn}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
+      <Text style={image === null ? textDisabled : styles.textBtn}>{name}</Text>
     </TouchableOpacity>
   );
 };
@@ -29,4 +34,12 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     letterSpacing: 1.5,
   },
+  btnDisabled: {
+    backgroundColor: '#F6F6F6',
+  },
+  textDisabled: {
+    color: '#BDBDBD',
+  },
 });
+const btnDisabled = StyleSheet.compose(styles.btn, styles.btnDisabled);
+const textDisabled = StyleSheet.compose(styles.textBtn, styles.textDisabled);
