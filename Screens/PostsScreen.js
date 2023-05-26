@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Image, StyleSheet, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import {
+  View,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+
+import { Feather } from '@expo/vector-icons';
 
 const PostsScreen = ({ route }) => {
+  const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
   console.log('params', route.params);
   useEffect(() => {
     if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+      setPosts((prevState) => [route.params, ...prevState]);
     }
   }, [route.params]);
   return (
@@ -17,7 +28,41 @@ const PostsScreen = ({ route }) => {
         renderItem={({ item }) => (
           <View style={styles.imageContainer}>
             <Image source={{ uri: item.image }} style={styles.image} />
-            {item.name ? <Text>{item.name}</Text> : <Text>No name</Text>}
+            {item.name ? (
+              <Text style={styles.textName}>{item.name}</Text>
+            ) : (
+              <Text style={textNoName}>No name</Text>
+            )}
+            <View style={styles.wrapperNavigation}>
+              <TouchableOpacity
+                style={{ marginRight: 6 }}
+                onPress={() =>
+                  navigation.navigate('Comments', { image: item.image })
+                }
+              >
+                <Feather name="message-circle" size={24} color="#BDBDBD" />
+              </TouchableOpacity>
+              <Text style={styles.amountComments}>0</Text>
+              <Feather
+                style={styles.markLocation}
+                name="map-pin"
+                size={24}
+                color="#BDBDBD"
+              />
+
+              <TouchableOpacity
+                disabled={item.coords ? false : true}
+                onPress={() =>
+                  navigation.navigate('Map', { coords: item.coords })
+                }
+              >
+                {item.location ? (
+                  <Text style={styles.textLocation}>{item.location}</Text>
+                ) : (
+                  <Text style={textNoLocation}>No location</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       />
@@ -41,4 +86,48 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
   },
+  textName: {
+    marginBottom: 8,
+    fontFamily: 'Roboto-medium',
+    fontStyle: 'normal',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#212121',
+  },
+  textNoName: {
+    color: '#BDBDBD',
+  },
+  wrapperNavigation: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  amountComments: {
+    marginRight: 49,
+    fontFamily: 'Roboto-regular',
+    fontStyle: 'normal',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#BDBDBD',
+  },
+  markLocation: {
+    marginRight: 4,
+  },
+  textLocation: {
+    fontFamily: 'Roboto-regular',
+    fontStyle: 'normal',
+    fontSize: 16,
+    lineHeight: 19,
+
+    textDecorationLine: 'underline',
+    color: '#212121',
+  },
+  textNoLocation: {
+    color: '#BDBDBD',
+  },
 });
+const textNoName = StyleSheet.compose(styles.textName, styles.textNoName);
+const textNoLocation = StyleSheet.compose(
+  styles.textLocation,
+  styles.textNoLocation
+);

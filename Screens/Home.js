@@ -16,12 +16,9 @@ const Home = () => {
   const navigation = useNavigation();
   return (
     <Tab.Navigator
-      initialRouteName="HomePosts"
+      initialRouteName="Posts"
       backBehavior="history"
-      screenOptions={{
-        tabBarShowLabel: false,
-        tabBarStyle: { position: 'absolute' },
-      }}
+      screenOptions={{ tabBarShowLabel: false }}
     >
       <Tab.Screen
         options={{
@@ -39,16 +36,15 @@ const Home = () => {
             borderBottomColor: '#BDBDBD',
             borderBottomWidth: 1,
           },
+
+          headerLeft: () => {
+            return null;
+          },
+
           headerRightContainerStyle: {
             paddingRight: 10,
           },
-          tabBarStyle: {
-            height: 83,
-            paddingTop: 9,
-            paddingBottom: 34,
-            borderTopColor: '#BDBDBD',
-            borderTopWidth: 1,
-          },
+
           headerRight: () => (
             <Feather
               name="log-out"
@@ -57,10 +53,19 @@ const Home = () => {
               onPress={() => navigation.navigate('Login')}
             />
           ),
+
+          tabBarStyle: {
+            height: 83,
+            paddingTop: 9,
+            paddingBottom: 34,
+            borderTopColor: '#BDBDBD',
+            borderTopWidth: 1,
+          },
+
           tabBarIcon: () => <Feather name="grid" size={24} color="#212121CC" />,
           tabBarIconStyle: { marginLeft: 81 },
         }}
-        name="HomePosts"
+        name="Posts"
         component={PostsScreen}
       />
       <Tab.Screen
@@ -82,15 +87,17 @@ const Home = () => {
           },
           tabBarButton: () => (
             <ButtonOrangeOval
-              onPress={() => navigation.navigate('CreatePostsScreen')}
+              onPress={() => navigation.navigate('CreatePosts')}
             >
               <AntDesign name="plus" size={18} color="#fff" />
             </ButtonOrangeOval>
           ),
+
           tabBarStyle: { display: 'none' },
+
           headerLeft: () => (
             <HeaderBackButton
-              onPress={() => navigation.navigate('HomePosts')}
+              onPress={() => navigation.navigate('Posts')}
               backImage={() => (
                 <Feather name="arrow-left" size={24} color="#212121CC" />
               )}
@@ -98,7 +105,7 @@ const Home = () => {
             />
           ),
         }}
-        name="CreatePostsScreen"
+        name="CreatePosts"
         component={CreatePostsScreen}
       />
       <Tab.Screen
@@ -107,6 +114,7 @@ const Home = () => {
           tabBarIconStyle: { marginRight: 81 },
           headerShown: false,
           tabBarStyle: {
+            position: 'absolute',
             height: 83,
             paddingTop: 9,
             paddingBottom: 34,
@@ -114,7 +122,7 @@ const Home = () => {
             borderTopWidth: 1,
           },
         }}
-        name="ProfileScreen"
+        name="Profile"
         component={ProfileScreen}
       />
     </Tab.Navigator>

@@ -53,7 +53,7 @@ const RegistrationScreen = () => {
       email: stateForm.email,
       password: stateForm.password,
     });
-    navigation.navigate('Home');
+    navigation.navigate('HomePosts');
     dispatchForm({ type: 'login', payload: '' });
     dispatchForm({ type: 'email', payload: '' });
     dispatchForm({ type: 'password', payload: '' });

@@ -1,58 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   Text,
   TextInput,
-  Image,
 } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
-import { Feather } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import * as Location from 'expo-location';
 
+import { Feather } from '@expo/vector-icons';
+import * as Location from 'expo-location';
+import CameraComponent from '../Components/Camera';
 import Button from '../Components/Button';
 import ButtonOrangeOval from '../Components/ButtonOrangeOval';
+import { formReducer, initStateCreatePosts } from '../Servises/reducer';
 
 const CreatePostsScreen = ({ navigation }) => {
-  const [cameraRef, setCameraRef] = useState(null);
-  const [type, setType] = useState(CameraType.back);
-  const [hasPermission, setHerPermission] = useState(null);
+  const [state, dispatchForm] = useReducer(formReducer, initStateCreatePosts);
   const [image, setImage] = useState(null);
+
   const isFocused = useIsFocused();
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
-
-      setHerPermission(status === 'granted');
-    })();
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  const takePhoto = async () => {
-    if (cameraRef) {
-      const { uri } = await cameraRef.takePictureAsync();
-      await MediaLibrary.createAssetAsync(uri);
-      setImage(uri);
-    }
-  };
 
   const publishPhoto = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      navigation.navigate('HomePosts', { image });
+      navigation.navigate('Posts', {
+        image,
+        name: state.name,
+        location: state.location,
+      });
 
       setImage(null);
       return;
@@ -63,87 +41,73 @@ const CreatePostsScreen = ({ navigation }) => {
       longitude: location.coords.longitude,
     };
 
-    navigation.navigate('HomePosts', { image, coords });
+    navigation.navigate('Posts', {
+      image,
+      name: state.name,
+      location: state.location,
+      coords,
+    });
 
     setImage(null);
   };
 
   const deletePhoto = () => {
     console.log('delete');
+    a;
     setImage(null);
   };
 
-  const toggleCameraType = () => {
-    setType((current) =>
-      current === CameraType.back ? CameraType.back : CameraType.front
-    );
-  };
   return (
-    <View style={styles.container}>
-      {isFocused && (
-        <Camera style={styles.camera} type={type} ref={setCameraRef}>
-          {image && (
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: image }} style={styles.image} />
-            </View>
-          )}
-
-          <TouchableOpacity
-            disabled={image}
-            style={image ? btnTransparent : styles.btnPhoto}
-            onPress={takePhoto}
-          >
-            <MaterialIcons
-              name="camera-alt"
-              size={24}
-              color={image ? 'transpareent' : '#ffffff'}
-            />
-          </TouchableOpacity>
-        </Camera>
-      )}
-      <TouchableOpacity style={styles.editBtn} activeOpacity={0.7}>
-        <Text style={styles.textEditBtn}>Edit photo</Text>
-      </TouchableOpacity>
-      <View>
-        <TextInput
-          style={styles.input}
-          autoComplete="off"
-          // onChangeText={() => {}}
-          placeholder="Name photo"
-          placeholderTextColor="#BDBDBD"
-          cursorColor="#212121"
-          // value={}
-        />
-        <View style={styles.containerInputLocation}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        {isFocused && <CameraComponent image={image} onPress={setImage} />}
+        <TouchableOpacity style={styles.editBtn} activeOpacity={0.7}>
+          <Text style={styles.textEditBtn}>Edit photo</Text>
+        </TouchableOpacity>
+        <View>
           <TextInput
-            style={inputLocation}
+            style={styles.input}
             autoComplete="off"
-            // onChangeText={() => {}}
-            placeholder="Location"
+            onChangeText={(value) =>
+              dispatchForm({ type: 'name', payload: value })
+            }
+            placeholder="Name photo"
             placeholderTextColor="#BDBDBD"
             cursorColor="#212121"
-            // value={}
+            value={state.name}
           />
-          <Feather
-            disabled
-            style={styles.markLocation}
-            name="map-pin"
-            size={24}
-            color="#BDBDBD"
-          />
+          <View style={styles.containerInputLocation}>
+            <TextInput
+              style={inputLocation}
+              autoComplete="off"
+              onChangeText={(value) =>
+                dispatchForm({ type: 'location', payload: value })
+              }
+              placeholder="Location"
+              placeholderTextColor="#BDBDBD"
+              cursorColor="#212121"
+              value={state.location}
+            />
+            <Feather
+              style={styles.markLocation}
+              name="map-pin"
+              size={24}
+              color="#BDBDBD"
+            />
+          </View>
+          <Button image={image} name="Publish" onPress={publishPhoto} />
         </View>
-        <Button image={image} name="Publish" onPress={publishPhoto} />
+        <View style={styles.buttonContainer}>
+          <ButtonOrangeOval image={image} onPress={deletePhoto}>
+            <Feather
+              name="trash-2"
+              size={24}
+              color={image === null ? '#BDBDBD' : '#ffffff'}
+            />
+          </ButtonOrangeOval>
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <ButtonOrangeOval image={image} onPress={deletePhoto}>
-          <Feather
-            name="trash-2"
-            size={24}
-            color={image === null ? '#BDBDBD' : '#ffffff'}
-          />
-        </ButtonOrangeOval>
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 export default CreatePostsScreen;
@@ -156,38 +120,7 @@ const styles = StyleSheet.create({
     paddingBottom: 34,
     paddingHorizontal: 16,
   },
-  camera: {
-    position: 'relative',
-    height: 240,
 
-    marginBottom: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  btnPhoto: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#ffffff',
-    opacity: 0.3,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnTransparent: {
-    opacity: 0,
-  },
-  imageContainer: {
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    zIndex: 100,
-  },
-  image: {
-    height: 200,
-    width: 300,
-  },
   editBtn: {
     marginBottom: 32,
   },
@@ -233,7 +166,3 @@ const styles = StyleSheet.create({
   },
 });
 const inputLocation = StyleSheet.compose(styles.input, styles.inputLocation);
-const btnTransparent = StyleSheet.compose(
-  styles.btnPhoto,
-  styles.btnTransparent
-);

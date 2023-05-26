@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import RegistrationScreen from './Screens/RegistrationScreen';
 import LoginScreen from './Screens/LoginScreen';
-import Home from './Screens/Home';
+import HomePosts from './Screens/HomePosts';
 
 const Stack = createStackNavigator();
 
@@ -26,7 +26,7 @@ export default function App() {
       >
         <Stack.Screen name="Registration" component={RegistrationScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="HomePosts" component={HomePosts} />
       </Stack.Navigator>
     </NavigationContainer>
   );

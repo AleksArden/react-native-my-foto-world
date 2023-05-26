@@ -8,6 +8,10 @@ export const initStateSignIn = {
   email: '',
   password: '',
 };
+export const initStateCreatePosts = {
+  name: '',
+  location: '',
+};
 
 export function formReducer(state, { type, payload }) {
   return (state = { ...state, [type]: payload });
