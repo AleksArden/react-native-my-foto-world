@@ -1,30 +1,31 @@
 import React, { useReducer, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
   Text,
   TextInput,
 } from 'react-native';
-
-import { Feather } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import * as Location from 'expo-location';
+import { Feather } from '@expo/vector-icons';
+import { formReducer, initStateCreatePosts } from '../Servises/reducer';
+
 import CameraComponent from '../Components/Camera';
 import Button from '../Components/Button';
+import ButtonText from '../Components/ButtonText';
 import ButtonOrangeOval from '../Components/ButtonOrangeOval';
-import { formReducer, initStateCreatePosts } from '../Servises/reducer';
+import IconLocation from '../Components/IconLocation';
 
 const CreatePostsScreen = ({ navigation }) => {
   const [state, dispatchForm] = useReducer(formReducer, initStateCreatePosts);
   const [image, setImage] = useState(null);
-
   const isFocused = useIsFocused();
 
   const publishPhoto = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
+
     if (status !== 'granted') {
       navigation.navigate('Posts', {
         image,
@@ -36,6 +37,7 @@ const CreatePostsScreen = ({ navigation }) => {
       return;
     }
     let location = await Location.getCurrentPositionAsync({});
+
     const coords = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
@@ -53,7 +55,6 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const deletePhoto = () => {
     console.log('delete');
-    a;
     setImage(null);
   };
 
@@ -61,9 +62,9 @@ const CreatePostsScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         {isFocused && <CameraComponent image={image} onPress={setImage} />}
-        <TouchableOpacity style={styles.editBtn} activeOpacity={0.7}>
+        <ButtonText style={{ marginBottom: 32 }}>
           <Text style={styles.textEditBtn}>Edit photo</Text>
-        </TouchableOpacity>
+        </ButtonText>
         <View>
           <TextInput
             style={styles.input}
@@ -88,12 +89,7 @@ const CreatePostsScreen = ({ navigation }) => {
               cursorColor="#212121"
               value={state.location}
             />
-            <Feather
-              style={styles.markLocation}
-              name="map-pin"
-              size={24}
-              color="#BDBDBD"
-            />
+            <IconLocation style={styles.markLocation} />
           </View>
           <Button image={image} name="Publish" onPress={publishPhoto} />
         </View>
@@ -115,21 +111,20 @@ export default CreatePostsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+
     paddingTop: 32,
     paddingBottom: 34,
     paddingHorizontal: 16,
-  },
 
-  editBtn: {
-    marginBottom: 32,
+    backgroundColor: '#FFFFFF',
   },
   textEditBtn: {
+    color: '#BDBDBD',
+
     fontFamily: 'Roboto-regular',
     fontStyle: 'normal',
     fontSize: 16,
     lineHeight: 19,
-    color: '#BDBDBD',
     letterSpacing: 1.5,
   },
   input: {
@@ -138,11 +133,13 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderColor: '#BDBDBD',
+
+    color: '#212121',
+
     fontFamily: 'Roboto-medium',
     fontStyle: 'normal',
     fontSize: 16,
     lineHeight: 19,
-    color: '#212121',
   },
   containerInputLocation: {
     position: 'relative',

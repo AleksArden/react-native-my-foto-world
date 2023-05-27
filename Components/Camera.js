@@ -12,6 +12,7 @@ const CameraComponent = ({ image, onPress }) => {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
+
       await MediaLibrary.requestPermissionsAsync();
 
       setHerPermission(status === 'granted');
@@ -21,7 +22,6 @@ const CameraComponent = ({ image, onPress }) => {
   if (hasPermission === null) {
     return <View />;
   }
-
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
@@ -29,7 +29,9 @@ const CameraComponent = ({ image, onPress }) => {
   const takePhoto = async () => {
     if (cameraRef) {
       const { uri } = await cameraRef.takePictureAsync();
+
       await MediaLibrary.createAssetAsync(uri);
+
       onPress(uri);
     }
   };
@@ -65,28 +67,30 @@ export default CameraComponent;
 const styles = StyleSheet.create({
   camera: {
     position: 'relative',
-    height: 240,
-
-    marginBottom: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    height: 240,
+    marginBottom: 8,
+
     borderRadius: 8,
     borderWidth: 1,
   },
   btnPhoto: {
     width: 60,
     height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+
     backgroundColor: '#ffffff',
     opacity: 0.3,
     borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   btnTransparent: {
     opacity: 0,
   },
   imageContainer: {
     position: 'absolute',
+
     borderWidth: 1,
     borderColor: '#ffffff',
     zIndex: 100,

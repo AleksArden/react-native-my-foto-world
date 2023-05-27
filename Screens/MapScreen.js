@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 
 const MapScreen = ({ route }) => {
   const { latitude, longitude } = route.params.coords;
+
   return (
     <View style={styles.container}>
       <MapView
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+
     backgroundColor: '#ffffff',
   },
   map: {

@@ -7,7 +7,7 @@ const Button = ({ onPress, name, image }) => {
       disabled={image === null ? true : false}
       style={image === null ? btnDisabled : styles.btn}
       onPress={onPress}
-      activeOpacity={0.8}
+      activeOpacity={0.7}
     >
       <Text style={image === null ? textDisabled : styles.textBtn}>{name}</Text>
     </TouchableOpacity>

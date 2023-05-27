@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useReducer } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Icon from '../assets/icons/icon-add.svg';
-import ImageBackgroundComponent from '../Components/ImageBackground';
-import Button from '../Components/Button';
-import ButtonShowHide from '../Components/ButtonShowHide';
 
 import {
   btnShowHideReducer,
@@ -21,6 +16,11 @@ import {
   initStateBtnShowHide,
   initStateRegister,
 } from '../Servises/reducer';
+import ImageBackgroundComponent from '../Components/ImageBackground';
+import Button from '../Components/Button';
+import ButtonShowHide from '../Components/ButtonShowHide';
+import ContainerButtonText from '../Components/ContainerButtonText';
+import UserImageContainer from '../Components/UserImageContainer';
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
@@ -65,13 +65,7 @@ const RegistrationScreen = () => {
         <ImageBackgroundComponent>
           <KeyboardAvoidingView style={styles.wrapper} behavior="height">
             <View style={styles.form}>
-              <View style={styles.imageContainer}>
-                <TouchableOpacity style={styles.iconBtn}>
-                  <View>
-                    <Icon />
-                  </View>
-                </TouchableOpacity>
-              </View>
+              <UserImageContainer />
               <Text style={styles.title}>Registration</Text>
 
               <TextInput
@@ -136,15 +130,11 @@ const RegistrationScreen = () => {
               {!isShowKeyboard && (
                 <>
                   <Button onPress={formSubmit} name="Register" />
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => navigation.navigate('Login')}
-                  >
-                    <Text style={styles.text}>
-                      Already have an account? Sign in
-                    </Text>
-                  </TouchableOpacity>
+                  <ContainerButtonText
+                    question="Already have an account?"
+                    name="Sign in"
+                    screen="Login"
+                  />
                 </>
               )}
             </View>
@@ -175,23 +165,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
-  imageContainer: {
-    position: 'absolute',
-    flex: 1,
 
-    width: 120,
-    height: 120,
-    left: '55%',
-    transform: [{ translateX: -60 }, { translateY: -60 }],
-
-    backgroundColor: '#F6F6F6',
-    borderRadius: 16,
-  },
-  iconBtn: {
-    position: 'absolute',
-    top: 81,
-    right: -12,
-  },
   title: {
     marginBottom: 32,
 
@@ -223,18 +197,6 @@ const styles = StyleSheet.create({
   inputOnFocus: {
     backgroundColor: '#FFFFFF',
     borderColor: '#FF6C00',
-  },
-
-  text: {
-    marginBottom: 78,
-
-    color: '#1B4371',
-
-    fontFamily: 'Roboto-regular',
-    fontStyle: 'normal',
-    fontSize: 16,
-    lineHeight: 19,
-    textAlign: 'center',
   },
 });
 const inputOnFocus = StyleSheet.compose(styles.input, styles.inputOnFocus);

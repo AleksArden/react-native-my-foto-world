@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -7,19 +8,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
-  TouchableOpacity,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-import ImageBackgroundComponent from '../Components/ImageBackground';
-import Button from '../Components/Button';
-import ButtonShowHide from '../Components/ButtonShowHide';
 import {
   btnShowHideReducer,
   formReducer,
   initStateBtnShowHide,
   initStateSignIn,
 } from '../Servises/reducer';
+import ImageBackgroundComponent from '../Components/ImageBackground';
+import Button from '../Components/Button';
+import ButtonShowHide from '../Components/ButtonShowHide';
+import ContainerButtonText from '../Components/ContainerButtonText';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -110,14 +110,11 @@ const LoginScreen = () => {
               {!isShowKeyboard && (
                 <>
                   <Button onPress={formSubmit} name="Sign In" />
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => navigation.navigate('Registration')}
-                  >
-                    <Text style={styles.text}>
-                      Don't have an account? Register
-                    </Text>
-                  </TouchableOpacity>
+                  <ContainerButtonText
+                    question="Don't have an account?"
+                    name="Register"
+                    screen="Registration"
+                  />
                 </>
               )}
             </View>
@@ -133,7 +130,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   wrapper: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -179,17 +175,6 @@ const styles = StyleSheet.create({
   inputOnFocus: {
     backgroundColor: '#FFFFFF',
     borderColor: '#FF6C00',
-  },
-  text: {
-    marginBottom: 144,
-
-    color: '#1B4371',
-
-    fontFamily: 'Roboto-regular',
-    fontStyle: 'normal',
-    fontSize: 16,
-    lineHeight: 19,
-    textAlign: 'center',
   },
 });
 const inputOnFocus = StyleSheet.compose(styles.input, styles.inputOnFocus);

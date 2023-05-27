@@ -6,7 +6,7 @@ const ButtonOrangeOval = ({ onPress, children, image }) => {
     <TouchableOpacity
       disabled={image === null ? true : false}
       style={image === null ? btnDisabled : styles.btn}
-      activeOpacity={0.8}
+      activeOpacity={0.7}
       onPress={onPress}
     >
       {children}
@@ -19,13 +19,14 @@ const styles = StyleSheet.create({
   btn: {
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
     width: 70,
     height: 40,
-    backgroundColor: '#FF6C00',
-    alignSelf: 'center',
-    borderRadius: 100,
     marginLeft: 31,
     marginRight: 31,
+
+    backgroundColor: '#FF6C00',
+    borderRadius: 100,
   },
   btnDisabled: {
     backgroundColor: '#F6F6F6',
