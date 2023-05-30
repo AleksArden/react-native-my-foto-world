@@ -26,7 +26,6 @@ import UserImageContainer from '../Components/UserImageContainer';
 import { selectUserId } from '../redux/auth/authSelectors';
 
 const RegistrationScreen = () => {
-  const navigation = useNavigation();
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateRegister);
 
   const [stateShowHide, dispatchShowHide] = useReducer(
@@ -37,7 +36,7 @@ const RegistrationScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [inputName, setInputName] = useState('');
   const dispatch = useDispatch();
-  const userId = useSelector(selectUserId);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -53,19 +52,20 @@ const RegistrationScreen = () => {
   }, []);
 
   const formSubmit = () => {
-    console.log(userId);
-    if (!userId) {
-      navigation.navigate('Login');
-      return;
-    }
     dispatch(registerUser(stateForm));
     console.log(stateForm);
-    navigation.navigate('HomePosts');
+
     dispatchForm({ type: 'login', payload: '' });
     dispatchForm({ type: 'email', payload: '' });
     dispatchForm({ type: 'password', payload: '' });
   };
-
+  const userId = useSelector(selectUserId);
+  if (userId) {
+    console.log(userId);
+    navigation.navigate('HomePosts');
+  } else {
+    console.log(userId);
+  }
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>

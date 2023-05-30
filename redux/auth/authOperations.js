@@ -2,27 +2,27 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   updateProfile,
+  signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import { auth } from '../../firebase/config';
-import { saveUser } from './authSlice';
+
+import { saveUser, removeUser } from './authSlice';
 
 export const registerUser =
   ({ email, password, login }) =>
   async (dispatch) => {
-    sdfgh;
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(auth.currentUser, { displayName: login });
       onAuthStateChanged(auth, (user) => {
         console.log(user);
         if (user) {
-          console.log(user);
           const currentUser = {
             id: user.uid,
             email: user.email,
             login: user.displayName,
           };
-          console.log(currentUser);
           dispatch(saveUser(currentUser));
         } else {
         }
@@ -39,3 +39,36 @@ export const registerUser =
       console.log(error);
     }
   };
+
+export const signInUser =
+  ({ email, password }) =>
+  async (dispatch) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      onAuthStateChanged(auth, (user) => {
+        console.log(user);
+        if (user) {
+          console.log(user);
+          const currentUser = {
+            id: user.uid,
+            email: user.email,
+            login: user.displayName,
+          };
+          console.log(currentUser);
+          dispatch(saveUser(currentUser));
+        } else {
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+export const signOutUser = () => async (dispatch) => {
+  try {
+    await signOut(auth);
+
+    dispatch(removeUser());
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { HeaderBackButton } from '@react-navigation/elements';
@@ -9,11 +10,17 @@ import PostsScreen from './PostsScreen';
 import CreatePostsScreen from './CreatePostsScreen';
 import ProfileScreen from './ProfileScreen';
 import ButtonOrangeOval from '../Components/ButtonOrangeOval';
+import { signOutUser } from '../redux/auth/authOperations';
 
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const signOut = () => {
+    dispatch(signOutUser());
+    navigation.navigate('Login');
+  };
   return (
     <Tab.Navigator
       initialRouteName="Posts"
@@ -48,9 +55,10 @@ const Home = () => {
               name="log-out"
               size={24}
               color="#BDBDBD"
-              onPress={() => navigation.navigate('Login')}
+              onPress={signOut}
             />
           ),
+
           headerRightContainerStyle: {
             paddingRight: 10,
           },
