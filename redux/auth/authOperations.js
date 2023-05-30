@@ -1,33 +1,41 @@
-// import {
-//   createUserWithEmailAndPassword,
-//   onAuthStateChanged,
-//   updateProfile,
-// } from 'firebase/auth';
-// import { auth } from '../../firebase/config';
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  updateProfile,
+} from 'firebase/auth';
+import { auth } from '../../firebase/config';
+import { saveUser } from './authSlice';
 
-// export const registerUser =
-//   ({ email, password, login }) =>
-//   async () => {
-//     try {
-//       await createUserWithEmailAndPassword(auth, email, password);
-//       const user = await auth.currentUser;
-//       console.log('user', user);
-//       console.log('login', login);
-//       // await updateProfile(user, {
-//       //   login: login,
-//       // });
-//       // console.log(user.login);
-//       //     console.log(user.email);
-//       //     console.log(user.uid);
-//       //     const currentUser = {
-//       //       login: user.login,
-//       //       email: user.email,
-//       //       id: user.uid,
-//       //     };
-
-//       // console.log('currentUser', currentUser);
-//       return user;
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+export const registerUser =
+  ({ email, password, login }) =>
+  async (dispatch) => {
+    sdfgh;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser, { displayName: login });
+      onAuthStateChanged(auth, (user) => {
+        console.log(user);
+        if (user) {
+          console.log(user);
+          const currentUser = {
+            id: user.uid,
+            email: user.email,
+            login: user.displayName,
+          };
+          console.log(currentUser);
+          dispatch(saveUser(currentUser));
+        } else {
+        }
+      });
+      //   const user = auth.currentUser;
+      //   console.log(user);
+      //   if (user) {
+      //     const currentUser = { id: user.uid, email: user.email };
+      //     console.log(currentUser);
+      //     dispatch(saveUser(currentUser));
+      //   } else {
+      //   }
+    } catch (error) {
+      console.log(error);
+    }
+  };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import {
   View,
@@ -23,6 +23,7 @@ import Button from '../Components/Button';
 import ButtonShowHide from '../Components/ButtonShowHide';
 import ContainerButtonText from '../Components/ContainerButtonText';
 import UserImageContainer from '../Components/UserImageContainer';
+import { selectUserId } from '../redux/auth/authSelectors';
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
@@ -36,6 +37,7 @@ const RegistrationScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [inputName, setInputName] = useState('');
   const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -51,7 +53,12 @@ const RegistrationScreen = () => {
   }, []);
 
   const formSubmit = () => {
-    // dispatch(registerUser(stateForm));
+    console.log(userId);
+    if (!userId) {
+      navigation.navigate('Login');
+      return;
+    }
+    dispatch(registerUser(stateForm));
     console.log(stateForm);
     navigation.navigate('HomePosts');
     dispatchForm({ type: 'login', payload: '' });
@@ -108,7 +115,7 @@ const RegistrationScreen = () => {
                     dispatchForm({ type: 'password', payload: value })
                   }
                   autoComplete="off"
-                  placeholder="Email"
+                  placeholder="Password"
                   placeholderTextColor="#BDBDBD"
                   cursorColor="#212121"
                   value={stateForm.password}
