@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import {
   View,
@@ -9,6 +10,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import { registerUser } from '../redux/auth/authOperations';
 
 import {
   btnShowHideReducer,
@@ -33,6 +35,7 @@ const RegistrationScreen = () => {
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [inputName, setInputName] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -48,11 +51,8 @@ const RegistrationScreen = () => {
   }, []);
 
   const formSubmit = () => {
-    console.log({
-      login: stateForm.login,
-      email: stateForm.email,
-      password: stateForm.password,
-    });
+    // dispatch(registerUser(stateForm));
+    console.log(stateForm);
     navigation.navigate('HomePosts');
     dispatchForm({ type: 'login', payload: '' });
     dispatchForm({ type: 'email', payload: '' });

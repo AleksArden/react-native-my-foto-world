@@ -7,9 +7,7 @@ import Icon from '../assets/icons/icon-add.svg';
 const UserImageContainer = () => {
   return (
     <View style={styles.imageContainer}>
-      <ButtonText style={styles.iconBtn}>
-        <Icon />
-      </ButtonText>
+      <ButtonText style={styles.iconBtn}>{/* <Icon /> */}</ButtonText>
     </View>
   );
 };
