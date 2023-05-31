@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 
-import { saveUser, removeUser } from './authSlice';
+import { saveUser, removeUser, refreshUser } from './authSlice';
 
 export const registerUser =
   ({ email, password, login }) =>
@@ -15,8 +15,8 @@ export const registerUser =
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(auth.currentUser, { displayName: login });
+
       onAuthStateChanged(auth, (user) => {
-        console.log(user);
         if (user) {
           const currentUser = {
             id: user.uid,
@@ -24,17 +24,8 @@ export const registerUser =
             login: user.displayName,
           };
           dispatch(saveUser(currentUser));
-        } else {
         }
       });
-      //   const user = auth.currentUser;
-      //   console.log(user);
-      //   if (user) {
-      //     const currentUser = { id: user.uid, email: user.email };
-      //     console.log(currentUser);
-      //     dispatch(saveUser(currentUser));
-      //   } else {
-      //   }
     } catch (error) {
       console.log(error);
     }
@@ -45,24 +36,23 @@ export const signInUser =
   async (dispatch) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+
       onAuthStateChanged(auth, (user) => {
-        console.log(user);
         if (user) {
-          console.log(user);
           const currentUser = {
             id: user.uid,
             email: user.email,
             login: user.displayName,
           };
-          console.log(currentUser);
+
           dispatch(saveUser(currentUser));
-        } else {
         }
       });
     } catch (error) {
       console.log(error);
     }
   };
+
 export const signOutUser = () => async (dispatch) => {
   try {
     await signOut(auth);
@@ -71,4 +61,19 @@ export const signOutUser = () => async (dispatch) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const authStateChangeUser = () => async (dispatch) => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const currentUser = {
+        id: user.uid,
+        email: user.email,
+        login: user.displayName,
+      };
+
+      dispatch(saveUser(currentUser));
+      dispatch(refreshUser(true));
+    }
+  });
 };

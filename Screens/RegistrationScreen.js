@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 import {
   View,
   Text,
@@ -23,7 +22,6 @@ import Button from '../Components/Button';
 import ButtonShowHide from '../Components/ButtonShowHide';
 import ContainerButtonText from '../Components/ContainerButtonText';
 import UserImageContainer from '../Components/UserImageContainer';
-import { selectUserId } from '../redux/auth/authSelectors';
 
 const RegistrationScreen = () => {
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateRegister);
@@ -36,7 +34,6 @@ const RegistrationScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [inputName, setInputName] = useState('');
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -53,19 +50,12 @@ const RegistrationScreen = () => {
 
   const formSubmit = () => {
     dispatch(registerUser(stateForm));
-    console.log(stateForm);
 
     dispatchForm({ type: 'login', payload: '' });
     dispatchForm({ type: 'email', payload: '' });
     dispatchForm({ type: 'password', payload: '' });
   };
-  const userId = useSelector(selectUserId);
-  if (userId) {
-    console.log(userId);
-    navigation.navigate('HomePosts');
-  } else {
-    console.log(userId);
-  }
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>

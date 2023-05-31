@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -10,6 +9,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import { signInUser } from '../redux/auth/authOperations';
 
 import {
   btnShowHideReducer,
@@ -21,10 +21,8 @@ import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
 import ButtonShowHide from '../Components/ButtonShowHide';
 import ContainerButtonText from '../Components/ContainerButtonText';
-import { signInUser } from '../redux/auth/authOperations';
 
 const LoginScreen = () => {
-  const navigation = useNavigation();
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateSignIn);
 
   const [stateShowHide, dispatchShowHide] = useReducer(
@@ -52,8 +50,7 @@ const LoginScreen = () => {
 
   const formSubmit = () => {
     dispatch(signInUser(stateForm));
-    console.log(stateForm);
-    navigation.navigate('HomePosts');
+
     dispatchForm({ type: 'email', payload: '' });
     dispatchForm({ type: 'password', payload: '' });
   };

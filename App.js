@@ -1,17 +1,11 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
-
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import { store } from './redux/store';
 
-import RegistrationScreen from './Screens/RegistrationScreen';
-import LoginScreen from './Screens/LoginScreen';
-import HomePosts from './Screens/HomePosts';
-
-const Stack = createStackNavigator();
+import MainRoutes from './Components/MainRoutes';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -25,14 +19,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Login"
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="Registration" component={RegistrationScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="HomePosts" component={HomePosts} />
-        </Stack.Navigator>
+        <MainRoutes />
       </NavigationContainer>
     </Provider>
   );
