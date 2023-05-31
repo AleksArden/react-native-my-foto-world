@@ -1,4 +1,5 @@
 import React, { useReducer, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   View,
   StyleSheet,
@@ -9,9 +10,14 @@ import {
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import * as Location from 'expo-location';
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../firebase/config';
+import { selectUserId, selectUserLogin } from '../redux/auth/authSelectors';
+import { nanoid } from 'nanoid';
 import { Feather } from '@expo/vector-icons';
-import { formReducer, initStateCreatePosts } from '../Servises/reducer';
 
+import { formReducer, initStateCreatePosts } from '../Servises/reducer';
 import CameraComponent from '../Components/Camera';
 import Button from '../Components/Button';
 import ButtonText from '../Components/ButtonText';
@@ -21,19 +27,19 @@ import IconLocation from '../Components/IconLocation';
 const CreatePostsScreen = ({ navigation }) => {
   const [state, dispatchForm] = useReducer(formReducer, initStateCreatePosts);
   const [image, setImage] = useState(null);
+
   const isFocused = useIsFocused();
+
+  const userId = useSelector(selectUserId);
+  const userLogin = useSelector(selectUserLogin);
 
   const publishPhoto = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
     if (status !== 'granted') {
-      navigation.navigate('Posts', {
-        image,
-        name: state.name,
-        location: state.location,
-      });
-
+      uploadPostToServerWithoutCoords();
       setImage(null);
+      navigation.navigate('Posts');
       return;
     }
     let location = await Location.getCurrentPositionAsync({});
@@ -43,18 +49,52 @@ const CreatePostsScreen = ({ navigation }) => {
       longitude: location.coords.longitude,
     };
 
-    navigation.navigate('Posts', {
-      image,
+    uploadPostToServerWithCoords(coords);
+    setImage(null);
+    navigation.navigate('Posts');
+  };
+  const uploadPostToServerWithoutCoords = async (coords) => {
+    const imageURL = await uploadPhotoToServer();
+
+    await addDoc(collection(db, 'posts'), {
+      image: imageURL,
+      name: state.name,
+      location: state.location,
+      userId,
+      userLogin,
+    });
+  };
+
+  const uploadPostToServerWithCoords = async (coords) => {
+    const imageURL = await uploadPhotoToServer();
+
+    await addDoc(collection(db, 'posts'), {
+      image: imageURL,
       name: state.name,
       location: state.location,
       coords,
+      userId,
+      userLogin,
     });
+  };
 
-    setImage(null);
+  const uploadPhotoToServer = async () => {
+    try {
+      const response = await fetch(image);
+      const file = await response.blob();
+      const postId = nanoid();
+
+      const storageRef = ref(storage, `images/${postId}`);
+      await uploadBytes(storageRef, file);
+
+      const imageURL = await getDownloadURL(ref(storage, `images/${postId}`));
+      return imageURL;
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const deletePhoto = () => {
-    console.log('delete');
     setImage(null);
   };
 
