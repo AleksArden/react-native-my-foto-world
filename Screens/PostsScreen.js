@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
+import { doc, onSnapshot, collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
 import ImageItem from '../Components/ImageItem';
 
-const PostsScreen = ({ route }) => {
+const PostsScreen = () => {
   const [posts, setPosts] = useState([]);
 
+  const getAllPosts = () => {
+    onSnapshot(collection(db, 'posts'), (data) => {
+      setPosts(data.docs.map((doc) => ({ ...doc.data(), postId: doc.id })));
+    });
+  };
+
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [route.params, ...prevState]);
-    }
-  }, [route.params]);
+    getAllPosts();
+  }, []);
+
   return (
     <View style={styles.container}>
       <FlatList
         data={posts}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => <ImageItem item={item} />}
+        keyExtractor={(item) => item.postId}
+        renderItem={({ item }) => <ImageItem post={item} />}
       />
     </View>
   );

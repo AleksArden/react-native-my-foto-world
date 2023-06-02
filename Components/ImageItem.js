@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import ButtonText from './ButtonText';
 import IconLocation from './IconLocation';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
-const ImageItem = ({ item }) => {
-  const { image, name, coords, location } = item;
+const ImageItem = ({ post }) => {
+  const { image, name, coords, location, postId } = post;
   const navigation = useNavigation();
+  const [amountComments, setAmountComments] = useState(0);
 
+  useEffect(() => {
+    getAmountComments();
+  }, []);
+
+  const getAmountComments = async () => {
+    onSnapshot(collection(db, 'posts', postId, 'comments'), (data) => {
+      setAmountComments(data.docs.length);
+    });
+  };
   return (
     <View style={styles.imageContainer}>
       <Image source={{ uri: image }} style={styles.image} />
@@ -21,11 +33,11 @@ const ImageItem = ({ item }) => {
       <View style={styles.wrapperNavigation}>
         <ButtonText
           style={{ marginRight: 6 }}
-          onPress={() => navigation.navigate('Comments', { image })}
+          onPress={() => navigation.navigate('Comments', { image, postId })}
         >
           <Feather name="message-circle" size={24} color="#BDBDBD" />
         </ButtonText>
-        <Text style={styles.amountComments}>0</Text>
+        <Text style={styles.amountComments}>{amountComments}</Text>
         <IconLocation style={styles.markLocation} />
 
         <ButtonText

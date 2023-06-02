@@ -53,7 +53,7 @@ const CreatePostsScreen = ({ navigation }) => {
     setImage(null);
     navigation.navigate('Posts');
   };
-  const uploadPostToServerWithoutCoords = async (coords) => {
+  const uploadPostToServerWithoutCoords = async () => {
     const imageURL = await uploadPhotoToServer();
 
     await addDoc(collection(db, 'posts'), {
