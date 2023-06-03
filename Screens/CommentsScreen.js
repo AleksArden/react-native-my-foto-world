@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   View,
   StyleSheet,
@@ -8,23 +9,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import ButtonText from '../Components/ButtonText';
-import { useSelector } from 'react-redux';
-import { selectUserLogin } from '../redux/auth/authSelectors';
 import { AntDesign } from '@expo/vector-icons';
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  updateDoc,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import { selectUserAvatar, selectUserLogin } from '../redux/auth/authSelectors';
+
+import ButtonText from '../Components/ButtonText';
 import CommentItem from '../Components/CommentItem';
 
 const CommentsScreen = ({ route }) => {
   const { image, postId } = route.params;
   const userLogin = useSelector(selectUserLogin);
+  const userAvatar = useSelector(selectUserAvatar)
 
   const [comment, setComment] = useState('');
   const [allComments, setAllComments] = useState([]);
@@ -34,14 +30,24 @@ const CommentsScreen = ({ route }) => {
     getAllComments();
   }, []);
   const createComment = async () => {
-    await addDoc(collection(db, 'posts', postId, 'comments'), {
-      comment,
-      userLogin,
-      time: new Date().toLocaleString(),
-    });
-    setComment('');
+    try {
+      await addDoc(collection(db, 'posts', postId, 'comments'), {
+        comment,
+        userAvatar,
+        userLogin,
+        date: new Date().toLocaleDateString('de-DE', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        time: new Date().toLocaleTimeString(),
+      });
+      setComment('');
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const getAllComments = async () => {
+  const getAllComments = () => {
     onSnapshot(collection(db, 'posts', postId, 'comments'), (data) => {
       setAllComments(
         data.docs.map((doc) => ({ ...doc.data(), postId: doc.id }))
@@ -55,6 +61,7 @@ const CommentsScreen = ({ route }) => {
         <View style={styles.imageContainer}>
           <Image source={{ uri: image }} style={styles.image} />
         </View>
+
         <View style={styles.commentsContainer}>
           <FlatList
             data={allComments}
@@ -63,6 +70,7 @@ const CommentsScreen = ({ route }) => {
               <CommentItem commentItem={item} index={index} />
             )}
           />
+
           <View style={styles.form}>
             <TextInput
               style={isOnFocus ? inputOnFocus : styles.input}
@@ -88,18 +96,17 @@ export default CommentsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-    backgroundColor: '#ffffff',
     paddingHorizontal: 16,
     paddingTop: 32,
     paddingBottom: 16,
+
+    backgroundColor: '#ffffff',
   },
   imageContainer: {
     marginBottom: 32,
   },
   image: {
     height: 240,
-
     marginBottom: 8,
 
     borderRadius: 8,
@@ -113,11 +120,11 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: '#E8E8E8',
-    borderRadius: 100,
     padding: 16,
 
+    color: '#212121',
     backgroundColor: '#F6F6F6',
+    borderRadius: 100,
     borderColor: '#E8E8E8',
     borderWidth: 1,
 
@@ -125,7 +132,6 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 16,
     lineHeight: 19,
-    color: '#212121',
   },
   inputOnFocus: {
     backgroundColor: '#FFFFFF',
@@ -135,12 +141,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    width: 34,
-    height: 34,
-    borderRadius: 50,
-    backgroundColor: '#FF6C00',
+
     alignItems: 'center',
     justifyContent: 'center',
+    width: 34,
+    height: 34,
+
+    borderRadius: 50,
+    backgroundColor: '#FF6C00',
   },
 });
 

@@ -21,7 +21,7 @@ import ImageBackgroundComponent from '../Components/ImageBackground';
 import Button from '../Components/Button';
 import ButtonShowHide from '../Components/ButtonShowHide';
 import ContainerButtonText from '../Components/ContainerButtonText';
-import UserImageContainer from '../Components/UserImageContainer';
+import UserImageRegistration from '../Components/UserImageRegistration';
 
 const RegistrationScreen = () => {
   const [stateForm, dispatchForm] = useReducer(formReducer, initStateRegister);
@@ -62,7 +62,7 @@ const RegistrationScreen = () => {
         <ImageBackgroundComponent>
           <KeyboardAvoidingView style={styles.wrapper} behavior="height">
             <View style={styles.form}>
-              <UserImageContainer />
+              <UserImageRegistration dispatchForm={dispatchForm} />
               <Text style={styles.title}>Registration</Text>
 
               <TextInput

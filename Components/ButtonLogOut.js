@@ -1,7 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { signOutUser } from '../redux/auth/authOperations';
 import { Feather } from '@expo/vector-icons';
+
+import { signOutUser } from '../redux/auth/authOperations';
 import ButtonText from './ButtonText';
 
 const ButtonLogOut = ({ style }) => {

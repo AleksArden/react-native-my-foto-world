@@ -7,14 +7,22 @@ import {
 } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 
-import { saveUser, removeUser, refreshUser } from './authSlice';
+import {
+  saveUser,
+  removeUser,
+  refreshUser,
+  updateUserAvatar,
+} from './authSlice';
 
 export const registerUser =
-  ({ email, password, login }) =>
+  ({ email, password, login, avatar }) =>
   async (dispatch) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, { displayName: login });
+      await updateProfile(auth.currentUser, {
+        displayName: login,
+        photoURL: avatar,
+      });
 
       onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -22,6 +30,7 @@ export const registerUser =
             id: user.uid,
             email: user.email,
             login: user.displayName,
+            avatar: user.photoURL,
           };
           dispatch(saveUser(currentUser));
         }
@@ -43,6 +52,7 @@ export const signInUser =
             id: user.uid,
             email: user.email,
             login: user.displayName,
+            avatar: user.photoURL,
           };
 
           dispatch(saveUser(currentUser));
@@ -63,13 +73,14 @@ export const signOutUser = () => async (dispatch) => {
   }
 };
 
-export const authStateChangeUser = () => async (dispatch) => {
+export const authStateChangeUser = () => (dispatch) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const currentUser = {
         id: user.uid,
         email: user.email,
         login: user.displayName,
+        avatar: user.photoURL,
       };
 
       dispatch(saveUser(currentUser));
@@ -77,3 +88,27 @@ export const authStateChangeUser = () => async (dispatch) => {
     }
   });
 };
+
+export const updateAvatar =
+  ({ avatar }) =>
+  async (dispatch) => {
+    try {
+      await updateProfile(auth.currentUser, {
+        photoURL: avatar,
+      });
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const currentUser = {
+            id: user.uid,
+            email: user.email,
+            login: user.displayName,
+            avatar: user.photoURL,
+          };
+
+          dispatch(updateUserAvatar(currentUser));
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };

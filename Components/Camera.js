@@ -27,12 +27,16 @@ const CameraComponent = ({ image, onPress }) => {
   }
 
   const takePhoto = async () => {
-    if (cameraRef) {
-      const { uri } = await cameraRef.takePictureAsync();
+    try {
+      if (cameraRef) {
+        const { uri } = await cameraRef.takePictureAsync();
 
-      await MediaLibrary.createAssetAsync(uri);
+        await MediaLibrary.createAssetAsync(uri);
 
-      onPress(uri);
+        onPress(uri);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

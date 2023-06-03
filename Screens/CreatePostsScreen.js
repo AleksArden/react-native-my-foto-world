@@ -10,11 +10,7 @@ import {
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import * as Location from 'expo-location';
-import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../firebase/config';
 import { selectUserId, selectUserLogin } from '../redux/auth/authSelectors';
-import { nanoid } from 'nanoid';
 import { Feather } from '@expo/vector-icons';
 
 import { formReducer, initStateCreatePosts } from '../Servises/reducer';
@@ -23,6 +19,10 @@ import Button from '../Components/Button';
 import ButtonText from '../Components/ButtonText';
 import ButtonOrangeOval from '../Components/ButtonOrangeOval';
 import IconLocation from '../Components/IconLocation';
+import {
+  uploadPostToServerWithCoords,
+  uploadPostToServerWithoutCoords,
+} from '../Servises/uploadServerFunctions';
 
 const CreatePostsScreen = ({ navigation }) => {
   const [state, dispatchForm] = useReducer(formReducer, initStateCreatePosts);
@@ -38,61 +38,37 @@ const CreatePostsScreen = ({ navigation }) => {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
     if (status !== 'granted') {
-      uploadPostToServerWithoutCoords();
+      const options = {
+        userId,
+        userLogin,
+        image,
+        name: state.name,
+        location: state.location,
+        nameStorage: 'images',
+      };
+      uploadPostToServerWithoutCoords(options);
       setImage(null);
       navigation.navigate('Posts');
       return;
     }
-    let location = await Location.getCurrentPositionAsync({});
+    let location = await Location.getCurrentPositionAsync();
 
-    const coords = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+    const options = {
+      coords: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+      userId,
+      userLogin,
+      image,
+      name: state.name,
+      location: state.location,
+      nameStorage: 'images',
     };
 
-    uploadPostToServerWithCoords(coords);
+    uploadPostToServerWithCoords(options);
     setImage(null);
     navigation.navigate('Posts');
-  };
-  const uploadPostToServerWithoutCoords = async () => {
-    const imageURL = await uploadPhotoToServer();
-
-    await addDoc(collection(db, 'posts'), {
-      image: imageURL,
-      name: state.name,
-      location: state.location,
-      userId,
-      userLogin,
-    });
-  };
-
-  const uploadPostToServerWithCoords = async (coords) => {
-    const imageURL = await uploadPhotoToServer();
-
-    await addDoc(collection(db, 'posts'), {
-      image: imageURL,
-      name: state.name,
-      location: state.location,
-      coords,
-      userId,
-      userLogin,
-    });
-  };
-
-  const uploadPhotoToServer = async () => {
-    try {
-      const response = await fetch(image);
-      const file = await response.blob();
-      const postId = nanoid();
-
-      const storageRef = ref(storage, `images/${postId}`);
-      await uploadBytes(storageRef, file);
-
-      const imageURL = await getDownloadURL(ref(storage, `images/${postId}`));
-      return imageURL;
-    } catch (error) {
-      console.log(error.message);
-    }
   };
 
   const deletePhoto = () => {
@@ -137,6 +113,7 @@ const CreatePostsScreen = ({ navigation }) => {
               onFocus={() => setInputName('location')}
               onBlur={() => setInputName('')}
             />
+
             <IconLocation style={styles.markLocation} />
           </View>
           <Button image={image} name="Publish" onPress={publishPhoto} />

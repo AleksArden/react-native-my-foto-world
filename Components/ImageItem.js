@@ -1,23 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Image, Text, StyleSheet } from 'react-native';
+import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase/config';
 import { Feather } from '@expo/vector-icons';
 
 import ButtonText from './ButtonText';
 import IconLocation from './IconLocation';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase/config';
 
-const ImageItem = ({ post }) => {
-  const { image, name, coords, location, postId } = post;
+const ImageItem = ({ post, screen }) => {
+  const { image, name, coords, location, postId, likes } = post;
   const navigation = useNavigation();
   const [amountComments, setAmountComments] = useState(0);
+  const [amountLikes, setAmountLikes] = useState(likes);
 
   useEffect(() => {
     getAmountComments();
   }, []);
 
-  const getAmountComments = async () => {
+  useEffect( () => {
+    (async() => {
+      await updateDoc(doc(db, 'posts', postId), {
+        likes: amountLikes,
+      })
+    })()
+  }, [amountLikes]);
+
+  const addOneLike = () => {
+    setAmountLikes((prevState) => {
+      return prevState + 1;
+    });
+  };
+  const getAmountComments = () => {
     onSnapshot(collection(db, 'posts', postId, 'comments'), (data) => {
       setAmountComments(data.docs.length);
     });
@@ -35,9 +49,41 @@ const ImageItem = ({ post }) => {
           style={{ marginRight: 6 }}
           onPress={() => navigation.navigate('Comments', { image, postId })}
         >
-          <Feather name="message-circle" size={24} color="#BDBDBD" />
+          <Feather
+            style={{ fill: '#FF6C00' }}
+            name="message-circle"
+            size={24}
+            color={amountComments > 0 ? '#FF6C00' : '#BDBDBD'}
+          />
         </ButtonText>
-        <Text style={styles.amountComments}>{amountComments}</Text>
+        <Text
+          style={[
+            styles.amountComments,
+            { color: amountComments > 0 ? '#212121' : '#BDBDBD' },
+          ]}
+        >
+          {amountComments}
+        </Text>
+        {screen === 'Profile' && (
+          <View style={styles.wrapperLikes}>
+            <ButtonText style={{ marginBottom: 4 }} onPress={addOneLike}>
+              <Feather
+                name="thumbs-up"
+                size={24}
+                color={amountLikes > 0 ? '#FF6C00' : '#BDBDBD'}
+              />
+            </ButtonText>
+            <Text
+              style={[
+                styles.amountLikes,
+                { color: amountLikes > 0 ? '#212121' : '#BDBDBD' },
+              ]}
+            >
+              {amountLikes}
+            </Text>
+          </View>
+        )}
+
         <IconLocation style={styles.markLocation} />
 
         <ButtonText
@@ -85,9 +131,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   amountComments: {
-    marginRight: 49,
+    marginRight: 24,
 
-    color: '#BDBDBD',
+    fontFamily: 'Roboto-regular',
+    fontStyle: 'normal',
+    fontSize: 16,
+    lineHeight: 19,
+  },
+  wrapperLikes: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  amountLikes: {
+    marginLeft: 6,
 
     fontFamily: 'Roboto-regular',
     fontStyle: 'normal',
@@ -96,6 +153,7 @@ const styles = StyleSheet.create({
   },
   markLocation: {
     marginRight: 4,
+    marginLeft: 'auto',
   },
   textLocation: {
     color: '#212121',

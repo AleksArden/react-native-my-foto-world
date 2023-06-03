@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
+import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { collection, onSnapshot, where, query } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import { selectUserId, selectUserLogin } from '../redux/auth/authSelectors';
 
 import ImageBackgroundComponent from '../Components/ImageBackground';
-import { selectUserId, selectUserLogin } from '../redux/auth/authSelectors';
-import UserImageContainer from '../Components/UserImageContainer';
+import UserImageProfile from '../Components/UserImageProfile';
 import ImageItem from '../Components/ImageItem';
-
 import ButtonLogOut from '../Components/ButtonLogOut';
 
 const ProfileScreen = () => {
   const userLogin = useSelector(selectUserLogin);
   const userId = useSelector(selectUserId);
   const [userPosts, setUserPosts] = useState([]);
-  console.log(userId);
+
   useEffect(() => {
     getUserPosts();
   }, []);
@@ -30,19 +29,22 @@ const ProfileScreen = () => {
       }
     );
   };
-  console.log(userPosts);
+
   return (
     <View style={styles.container}>
       <ImageBackgroundComponent>
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
           <View style={styles.userProfile}>
-            <UserImageContainer />
+            <UserImageProfile />
+
             <ButtonLogOut style={styles.btnLogOut} />
             <Text style={styles.title}>{userLogin}</Text>
             <FlatList
               data={userPosts}
               keyExtractor={(item) => item.postId}
-              renderItem={({ item }) => <ImageItem post={item} />}
+              renderItem={({ item }) => (
+                <ImageItem post={item} screen="Profile" />
+              )}
             />
           </View>
         </View>
@@ -60,10 +62,10 @@ const styles = StyleSheet.create({
 
     height: '80%',
     paddingTop: 92,
+    paddingBottom: 90,
     paddingHorizontal: 16,
 
     backgroundColor: '#FFFFFF',
-
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },

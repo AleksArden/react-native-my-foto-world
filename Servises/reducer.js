@@ -2,6 +2,7 @@ export const initStateRegister = {
   login: '',
   email: '',
   password: '',
+  avatar: null,
 };
 
 export const initStateSignIn = {
