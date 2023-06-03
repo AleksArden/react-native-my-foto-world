@@ -12,7 +12,13 @@ import ButtonText from '../Components/ButtonText';
 import { useSelector } from 'react-redux';
 import { selectUserLogin } from '../redux/auth/authSelectors';
 import { AntDesign } from '@expo/vector-icons';
-import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  updateDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { db } from '../firebase/config';
 import CommentItem from '../Components/CommentItem';
 
@@ -31,7 +37,9 @@ const CommentsScreen = ({ route }) => {
     await addDoc(collection(db, 'posts', postId, 'comments'), {
       comment,
       userLogin,
+      time: new Date().toLocaleString(),
     });
+    setComment('');
   };
   const getAllComments = async () => {
     onSnapshot(collection(db, 'posts', postId, 'comments'), (data) => {
@@ -40,7 +48,7 @@ const CommentsScreen = ({ route }) => {
       );
     });
   };
-  console.log(allComments);
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
@@ -51,7 +59,9 @@ const CommentsScreen = ({ route }) => {
           <FlatList
             data={allComments}
             keyExtractor={(item) => item.postId}
-            renderItem={({ item }) => <CommentItem commentItem={item} />}
+            renderItem={({ item, index }) => (
+              <CommentItem commentItem={item} index={index} />
+            )}
           />
           <View style={styles.form}>
             <TextInput
@@ -89,6 +99,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 240,
+
     marginBottom: 8,
 
     borderRadius: 8,

@@ -7,7 +7,12 @@ import ButtonText from './ButtonText';
 const ContainerButtonText = ({ question, name, screen }) => {
   const navigation = useNavigation();
   return (
-    <View style={styles.textContainer}>
+    <View
+      style={[
+        styles.textContainer,
+        { marginBottom: screen === 'Login' ? 78 : 144 },
+      ]}
+    >
       <Text style={styles.text}>{question}</Text>
       <ButtonText
         style={{ marginLeft: 5 }}
@@ -24,8 +29,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
-    marginBottom: 144,
   },
   text: {
     color: '#1B4371',

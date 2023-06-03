@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
-const CommentItem = ({ commentItem }) => {
-  const { comment, userLogin } = commentItem;
+const CommentItem = ({ commentItem, index }) => {
+  const { comment, userLogin, time } = commentItem;
+
+  console.log(time);
+
   return (
-    <View style={styles.commentContainer}>
+    <View
+      style={[
+        styles.commentContainer,
+        {
+          flexDirection: index === 0 || index % 2 === 0 ? 'row' : 'row-reverse',
+        },
+      ]}
+    >
       <Text style={styles.user}>{userLogin}</Text>
 
-      <View style={styles.textContainer}>
+      <View
+        style={[
+          styles.textContainer,
+          { marginLeft: index === 0 || index % 2 === 0 ? 16 : 0 },
+          { marginRight: index === 0 || index % 2 === 0 ? 0 : 16 },
+        ]}
+      >
         <Text style={styles.text}>{comment}</Text>
+        <Text>{time}</Text>
       </View>
     </View>
   );
@@ -18,18 +35,18 @@ export default CommentItem;
 const styles = StyleSheet.create({
   commentContainer: {
     marginBottom: 24,
-    flex: 1,
-    flexDirection: 'row',
+
+    gap: 16,
   },
   user: {},
   textContainer: {
-    marginLeft: 16,
     padding: 16,
     backgroundColor: 'rgba(0, 0, 0, 0.03)',
     flexGrow: 1,
     borderTopRightRadius: 6,
     borderBottomLeftRadius: 6,
     borderBottomRightRadius: 6,
+    gap: 16,
   },
   text: {
     fontFamily: 'Roboto-regular',

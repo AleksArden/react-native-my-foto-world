@@ -1,9 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+
+import { signOutUser } from '../redux/auth/authOperations';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { HeaderBackButton } from '@react-navigation/elements';
-import { signOutUser } from '../redux/auth/authOperations';
 
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -49,13 +50,12 @@ const Home = () => {
           },
           headerRight: () => (
             <Feather
+              onPress={() => dispatch(signOutUser())}
               name="log-out"
               size={24}
               color="#BDBDBD"
-              onPress={() => dispatch(signOutUser())}
             />
           ),
-
           headerRightContainerStyle: {
             paddingRight: 10,
           },

@@ -2,12 +2,14 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import ButtonText from './ButtonText';
-import Icon from '../assets/icons/icon-add.svg';
+import { AntDesign } from '@expo/vector-icons';
 
 const UserImageContainer = () => {
   return (
     <View style={styles.imageContainer}>
-      <ButtonText style={styles.iconBtn}>{/* <Icon /> */}</ButtonText>
+      <ButtonText style={styles.iconBtn}>
+        <AntDesign name="pluscircleo" size={24} color="#FF6C00" />
+      </ButtonText>
     </View>
   );
 };

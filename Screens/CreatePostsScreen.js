@@ -27,6 +27,7 @@ import IconLocation from '../Components/IconLocation';
 const CreatePostsScreen = ({ navigation }) => {
   const [state, dispatchForm] = useReducer(formReducer, initStateCreatePosts);
   const [image, setImage] = useState(null);
+  const [inputName, setInputName] = useState('');
 
   const isFocused = useIsFocused();
 
@@ -96,6 +97,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const deletePhoto = () => {
     setImage(null);
+    navigation.navigate('Posts');
   };
 
   return (
@@ -107,7 +109,7 @@ const CreatePostsScreen = ({ navigation }) => {
         </ButtonText>
         <View>
           <TextInput
-            style={styles.input}
+            style={inputName === 'name' ? inputOnFocus : styles.input}
             autoComplete="off"
             onChangeText={(value) =>
               dispatchForm({ type: 'name', payload: value })
@@ -116,10 +118,14 @@ const CreatePostsScreen = ({ navigation }) => {
             placeholderTextColor="#BDBDBD"
             cursorColor="#212121"
             value={state.name}
+            onFocus={() => setInputName('name')}
+            onBlur={() => setInputName('')}
           />
           <View style={styles.containerInputLocation}>
             <TextInput
-              style={inputLocation}
+              style={
+                inputName === 'location' ? inputOnFocusLocation : inputLocation
+              }
               autoComplete="off"
               onChangeText={(value) =>
                 dispatchForm({ type: 'location', payload: value })
@@ -128,6 +134,8 @@ const CreatePostsScreen = ({ navigation }) => {
               placeholderTextColor="#BDBDBD"
               cursorColor="#212121"
               value={state.location}
+              onFocus={() => setInputName('location')}
+              onBlur={() => setInputName('')}
             />
             <IconLocation style={styles.markLocation} />
           </View>
@@ -152,7 +160,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
 
-    paddingTop: 32,
+    paddingTop: 24,
     paddingBottom: 34,
     paddingHorizontal: 16,
 
@@ -194,6 +202,10 @@ const styles = StyleSheet.create({
     left: 0,
     top: 6,
   },
+  inputOnFocus: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FF6C00',
+  },
   btnTrash: {
     marginTop: 120,
   },
@@ -203,3 +215,8 @@ const styles = StyleSheet.create({
   },
 });
 const inputLocation = StyleSheet.compose(styles.input, styles.inputLocation);
+const inputOnFocus = StyleSheet.compose(styles.input, styles.inputOnFocus);
+const inputOnFocusLocation = StyleSheet.compose(
+  inputLocation,
+  styles.inputOnFocus
+);

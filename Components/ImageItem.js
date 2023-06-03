@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     marginBottom: 32,
   },
+
   image: {
     height: 240,
     marginBottom: 8,
