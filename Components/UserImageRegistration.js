@@ -20,9 +20,9 @@ const UserImageRegistration = ({ dispatchForm }) => {
 
       if (!result.canceled) {
         const image = result.assets[0].uri;
-        console.log(image);
 
         const imageURL = await uploadPhotoToServer(image, 'avatars');
+        console.log(image);
 
         dispatchForm({ type: 'avatar', payload: imageURL });
         setAvater(imageURL);

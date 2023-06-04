@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, Text } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,6 +8,8 @@ const CameraComponent = ({ image, onPress }) => {
   const [type, setType] = useState(CameraType.back);
   const [cameraRef, setCameraRef] = useState(null);
   const [hasPermission, setHerPermission] = useState(null);
+
+  console.log('image to camera', image);
 
   useEffect(() => {
     (async () => {
@@ -54,7 +56,7 @@ const CameraComponent = ({ image, onPress }) => {
       )}
 
       <TouchableOpacity
-        disabled={image}
+        disabled={image === null ? false : true}
         style={image ? btnTransparent : styles.btnPhoto}
         onPress={takePhoto}
       >

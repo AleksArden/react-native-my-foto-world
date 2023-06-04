@@ -34,7 +34,11 @@ export const uploadPostToServerWithCoords = async ({
   userLogin,
   nameStorage,
 }) => {
+  console.log('image to function', image);
   const imageURL = await uploadPhotoToServer(image, nameStorage);
+  console.log('imageURL', imageURL);
+
+  // console.log('likes', likes);
   try {
     await addDoc(collection(db, 'posts'), {
       image: imageURL,
@@ -43,7 +47,7 @@ export const uploadPostToServerWithCoords = async ({
       coords,
       userId,
       userLogin,
-      likes: 0,
+      // likes: 0,
     });
   } catch (error) {
     console.log(error);

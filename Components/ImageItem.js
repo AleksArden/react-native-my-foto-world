@@ -13,17 +13,17 @@ const ImageItem = ({ post, screen }) => {
   const navigation = useNavigation();
   const [amountComments, setAmountComments] = useState(0);
   const [amountLikes, setAmountLikes] = useState(likes);
-
+  console.log(image);
   useEffect(() => {
     getAmountComments();
   }, []);
 
-  useEffect( () => {
-    (async() => {
+  useEffect(() => {
+    (async () => {
       await updateDoc(doc(db, 'posts', postId), {
         likes: amountLikes,
-      })
-    })()
+      });
+    })();
   }, [amountLikes]);
 
   const addOneLike = () => {
