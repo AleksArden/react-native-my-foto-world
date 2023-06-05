@@ -9,8 +9,6 @@ const CameraComponent = ({ image, onPress }) => {
   const [cameraRef, setCameraRef] = useState(null);
   const [hasPermission, setHerPermission] = useState(null);
 
-  console.log('image to camera', image);
-
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -63,7 +61,7 @@ const CameraComponent = ({ image, onPress }) => {
         <MaterialIcons
           name="camera-alt"
           size={24}
-          color={image ? 'transpareent' : '#ffffff'}
+          color={image ? 'rgba(255, 255, 255, 0)' : '#ffffff'}
         />
       </TouchableOpacity>
     </Camera>

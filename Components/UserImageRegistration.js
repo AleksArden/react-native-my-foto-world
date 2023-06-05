@@ -22,7 +22,6 @@ const UserImageRegistration = ({ dispatchForm }) => {
         const image = result.assets[0].uri;
 
         const imageURL = await uploadPhotoToServer(image, 'avatars');
-        console.log(image);
 
         dispatchForm({ type: 'avatar', payload: imageURL });
         setAvater(imageURL);
@@ -33,7 +32,7 @@ const UserImageRegistration = ({ dispatchForm }) => {
   };
   return (
     <View style={styles.imageContainer}>
-      <Image style={styles.image} source={{ uri: avatar }} />
+      {avatar && <Image style={styles.image} source={{ uri: avatar }} />}
 
       <ButtonText style={styles.iconBtn} onPress={downloadAvatar}>
         <AntDesign name="pluscircleo" size={24} color="#FF6C00" />

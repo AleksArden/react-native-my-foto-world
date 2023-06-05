@@ -33,11 +33,13 @@ const PostsScreen = () => {
     <View style={styles.container}>
       <View style={styles.userContainer}>
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={{ uri: avatar }}
-            resizeMode="cover"
-          />
+          {avatar && (
+            <Image
+              style={styles.image}
+              source={{ uri: avatar }}
+              resizeMode="cover"
+            />
+          )}
         </View>
         <View style={styles.wrapper}>
           <Text style={styles.login}>{userLogin}</Text>

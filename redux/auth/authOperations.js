@@ -54,7 +54,7 @@ export const signInUser =
             login: user.displayName,
             avatar: user.photoURL,
           };
-          console.log(currentUser);
+
           dispatch(saveUser(currentUser));
         }
       });

@@ -49,11 +49,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "2e4605c4-47b7-4b48-97ee-b61ca589527e"
+        "projectId": "c6e5bf8f-ec80-4690-8788-cd33ac6923dd"
       }
     },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    }
+    "runtimeVersion": "48.0.0"
   }
 }

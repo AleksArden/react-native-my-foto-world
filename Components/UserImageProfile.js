@@ -35,7 +35,7 @@ const UserImageProfile = () => {
   };
   return (
     <View style={styles.imageContainer}>
-      <Image style={styles.image} source={{ uri: avatar }} />
+      {avatar && <Image style={styles.image} source={{ uri: avatar }} />}
 
       <ButtonText style={styles.iconBtn} onPress={downloadAvatar}>
         <AntDesign name="pluscircleo" size={24} color="#FF6C00" />

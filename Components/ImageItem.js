@@ -13,7 +13,7 @@ const ImageItem = ({ post, screen }) => {
   const navigation = useNavigation();
   const [amountComments, setAmountComments] = useState(0);
   const [amountLikes, setAmountLikes] = useState(likes);
-  console.log(image);
+
   useEffect(() => {
     getAmountComments();
   }, []);
@@ -50,7 +50,6 @@ const ImageItem = ({ post, screen }) => {
           onPress={() => navigation.navigate('Comments', { image, postId })}
         >
           <Feather
-            style={{ fill: '#FF6C00' }}
             name="message-circle"
             size={24}
             color={amountComments > 0 ? '#FF6C00' : '#BDBDBD'}

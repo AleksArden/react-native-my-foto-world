@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { View, StyleSheet, Text, Image } from 'react-native';
 
 const CommentItem = ({ commentItem, index }) => {
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 8,
 
-    color: '#212121,',
+    color: '#212121',
 
     fontFamily: 'Roboto-regular',
     fontStyle: 'normal',
